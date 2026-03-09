@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKD Admin Panel — Acts of Kindness Daily</title>
+    <meta name="description"
+        content="Admin panel for the AKD kindness app — manage quests, moderate proofs, view analytics.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-logo">
+                <div class="logo-icon">💛</div>
+                <h1>AKD Admin ✨</h1>
+                <p class="subtitle">Spreading Joy, One Act at a Time 💛</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="admin@akd.app" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="login-btn">Sign In</button>
+                <p id="login-error" class="error-text" style="display:none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Shell -->
+    <div id="app-shell" class="screen" style="display:none;">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon small">💛</div>
+                <span class="sidebar-title">AKD Admin 🌟</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="quests" id="nav-quests">
+                    <span class="nav-icon">⭐</span>
+                    <span class="nav-label">Quests</span>
+                </a>
+                <a href="#" class="nav-item" data-page="challenges" id="nav-challenges">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="nav-label">Challenges</span>
+                </a>
+                <a href="#" class="nav-item" data-page="moderation" id="nav-moderation">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-label">Moderation</span>
+                    <span class="nav-badge" id="pending-badge" style="display:none;">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users" id="nav-users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Users</span>
+                </a>
+                <a href="#" class="nav-item" data-page="audit" id="nav-audit">
+                    <span class="nav-icon">📜</span>
+                    <span class="nav-label">Audit Log</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="admin-info" id="admin-info">
+                    <div class="admin-avatar">👤</div>
+                    <span class="admin-name" id="admin-name">Admin</span>
+                </div>
+                <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <p class="page-subtitle">Welcome back, Kindness Ambassador! Let's spread some joy today. 🎈</p>
+                </div>
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card gradient-1">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-users">—</span>
+                            <span class="stat-label">Total Users</span>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-2">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-quests">—</span>
+                            <span class="stat-label">Quests Completed</span>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-3">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-challenges">—</span>
+                            <span class="stat-label">Challenges Done</span>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-4">
+                        <div class="stat-icon">🔍</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-pending">—</span>
+                            <span class="stat-label">Pending Proofs</span>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-5">
+                        <div class="stat-icon">💎</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-points">—</span>
+                            <span class="stat-label">Points Earned</span>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-6">
+                        <div class="stat-icon">💠</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-gems">—</span>
+                            <span class="stat-label">Gems Earned</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quests Page -->
+            <div class="page" id="page-quests" style="display:none;">
+                <div class="page-header">
+                    <h2>Quest Management 🗺️</h2>
+                    <button class="btn btn-primary" id="add-quest-btn">+ New Quest</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="quests-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Difficulty</th>
+                                <th>Reward</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quests-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Challenges Page -->
+            <div class="page" id="page-challenges" style="display:none;">
+                <div class="page-header">
+                    <h2>Hard Challenges 🔥</h2>
+                    <button class="btn btn-primary" id="add-challenge-btn">+ New Hard Challenge</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="challenges-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Difficulty</th>
+                                <th>Reward</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="challenges-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Moderation Page -->
+            <div class="page" id="page-moderation" style="display:none;">
+                <div class="page-header">
+                    <h2>Moderation Queue 🕵️</h2>
+                    <p class="page-subtitle">Review kindness proofs and make someone's day! 📸</p>
+                </div>
+                <div class="moderation-grid" id="moderation-grid">
+                    <p class="empty-state">Loading proofs...</p>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div class="page" id="page-users" style="display:none;">
+                <div class="page-header">
+                    <h2>User Management 🌍</h2>
+                    <div class="search-bar">
+                        <input type="text" id="user-search" placeholder="Search users...">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Points</th>
+                                <th>Gems</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="users-pagination"></div>
+            </div>
+
+            <!-- Audit Log Page -->
+            <div class="page" id="page-audit" style="display:none;">
+                <div class="page-header">
+                    <h2>Audit Log</h2>
+                    <p class="page-subtitle">Record of all admin actions</p>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Actor</th>
+                                <th>Action</th>
+                                <th>Target</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Quest Modal -->
+    <div class="modal-overlay" id="quest-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="quest-modal-title">New Quest</h3>
+                <button class="modal-close" id="quest-modal-close">&times;</button>
+            </div>
+            <form id="quest-form" class="modal-body">
+                <input type="hidden" id="quest-edit-id">
+                <div class="form-group">
+                    <label for="quest-title">Title</label>
+                    <input type="text" id="quest-title" required placeholder="e.g. Help a Neighbor">
+                </div>
+                <div class="form-group">
+                    <label for="quest-description">Description</label>
+                    <textarea id="quest-description" rows="3" required
+                        placeholder="Describe the act of kindness..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quest-category">Category</label>
+                        <select id="quest-category">
+                            <option value="community">Community</option>
+                            <option value="environment">Environment</option>
+                            <option value="self-care">Self-Care</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quest-difficulty">Difficulty</label>
+                        <select id="quest-difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quest-reward">Reward Points</label>
+                        <input type="number" id="quest-reward" value="10" min="1" max="100">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" id="quest-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="quest-save-btn">Save Quest</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Challenge Modal (Hard Quests) -->
+    <div class="modal-overlay" id="challenge-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="challenge-modal-title">New Hard Challenge</h3>
+                <button class="modal-close" id="challenge-modal-close">&times;</button>
+            </div>
+            <form id="challenge-form" class="modal-body">
+                <input type="hidden" id="challenge-edit-id">
+                <div class="form-group">
+                    <label for="challenge-title">Title</label>
+                    <input type="text" id="challenge-title" required placeholder="e.g. Clean up a park">
+                </div>
+                <div class="form-group">
+                    <label for="challenge-description">Description</label>
+                    <textarea id="challenge-description" rows="3" required
+                        placeholder="Describe this hard challenge..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="challenge-category">Category</label>
+                        <select id="challenge-category">
+                            <option value="community">Community</option>
+                            <option value="environment">Environment</option>
+                            <option value="self-care">Self-Care</option>
+                        </select>
+                    </div>
+                    <!-- Difficulty is hidden and forced to "hard" for challenges -->
+                    <input type="hidden" id="challenge-difficulty" value="hard">
+
+                    <div class="form-group">
+                        <label for="challenge-reward">Reward Gems</label>
+                        <input type="number" id="challenge-reward" value="5" min="1" max="1000">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" id="challenge-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="challenge-save-btn">Save Challenge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Balance Modal -->
+    <div class="modal-overlay" id="balance-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Modify Balances</h3>
+                <button class="modal-close"
+                    onclick="document.getElementById('balance-modal').style.display='none'">&times;</button>
+            </div>
+            <form id="balance-form" class="modal-body">
+                <input type="hidden" id="balance-user-id">
+                <div class="form-group">
+                    <label for="balance-points-delta">Add/Remove Points (+/-)</label>
+                    <input type="number" id="balance-points-delta" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="balance-gems-delta">Add/Remove Gems (+/-)</label>
+                    <input type="number" id="balance-gems-delta" value="0" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost"
+                        onclick="document.getElementById('balance-modal').style.display='none'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Balances</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

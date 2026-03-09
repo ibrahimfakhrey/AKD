@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKD — Acts of Kindness Daily</title>
+    <meta name="description" content="Spread kindness every day — complete quests, challenge friends, earn rewards!">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ══════ Auth Screen ══════ -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <div class="auth-logo">
+                <div class="logo-icon">💛</div>
+                <h1>AKD</h1>
+                <p class="subtitle">Acts of Kindness Daily</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="login-btn">Sign In</button>
+                <p id="login-error" class="error-text" style="display:none;"></p>
+                <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form" class="auth-form" style="display:none;">
+                <div class="form-group">
+                    <label for="signup-name">Display Name</label>
+                    <input type="text" id="signup-name" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="••••••••" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="signup-btn">Create Account</button>
+                <p id="signup-error" class="error-text" style="display:none;"></p>
+                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ══════ Main App ══════ -->
+    <div id="app" class="screen" style="display:none;">
+
+        <!-- Top Header -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <span class="top-logo">💛 AKD</span>
+            </div>
+            <div class="top-bar-right">
+                <span class="currency" id="header-points">⭐ 0</span>
+                <span class="currency" id="header-gems">💎 0</span>
+            </div>
+        </header>
+
+        <!-- Page Container -->
+        <main class="page-container">
+
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <div class="page-title">
+                    <h2>Today's Quests</h2>
+                    <p class="greeting" id="greeting">Good morning! Let's be kind today.</p>
+                </div>
+                <div class="quests-list" id="quests-list">
+                    <div class="empty-state">Loading your quests...</div>
+                </div>
+            </div>
+
+            <!-- Challenges Page -->
+            <div class="page" id="page-challenges" style="display:none;">
+                <div class="page-title">
+                    <h2>Challenges</h2>
+                </div>
+
+                <!-- Start a new challenge -->
+                <div class="section-card" id="start-challenge-section">
+                    <h3>Start a Hard Challenge</h3>
+                    <p class="section-desc">Pick a challenge and earn gems! Costs <strong>10 points</strong> to start.</p>
+                    <div class="challenge-pick-list" id="challenge-pick-list"></div>
+                </div>
+
+                <!-- Active challenge -->
+                <div class="section-card" id="active-challenge-section" style="display:none;">
+                    <h3>Your Active Challenge</h3>
+                    <div id="active-challenge-content"></div>
+                </div>
+
+                <!-- Received from friends -->
+                <div class="section-card">
+                    <h3>From Friends</h3>
+                    <div id="received-challenges-list">
+                        <p class="empty-hint">No challenges from friends yet.</p>
+                    </div>
+                </div>
+
+                <!-- Past challenges -->
+                <div class="section-card">
+                    <h3>Past Challenges</h3>
+                    <div id="past-challenges-list">
+                        <p class="empty-hint">Nothing here yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friends Page -->
+            <div class="page" id="page-friends" style="display:none;">
+                <div class="page-title">
+                    <h2>Friends</h2>
+                </div>
+
+                <!-- Send request -->
+                <div class="section-card">
+                    <h3>Add Friend</h3>
+                    <form id="friend-request-form" class="inline-form">
+                        <input type="email" id="friend-email" placeholder="friend@example.com" required>
+                        <button type="submit" class="btn btn-primary btn-sm">Send Request</button>
+                    </form>
+                </div>
+
+                <!-- Pending requests -->
+                <div class="section-card">
+                    <h3>Pending Requests</h3>
+                    <div id="pending-requests-list">
+                        <p class="empty-hint">No pending requests.</p>
+                    </div>
+                </div>
+
+                <!-- Friend list -->
+                <div class="section-card">
+                    <h3>My Friends</h3>
+                    <div id="friends-list">
+                        <p class="empty-hint">Add some friends to get started!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shop Page -->
+            <div class="page" id="page-shop" style="display:none;">
+                <div class="page-title">
+                    <h2>Shop</h2>
+                    <p class="balance-display">Your gems: <strong id="shop-gems">0</strong> 💎</p>
+                </div>
+                <div class="shop-grid" id="shop-grid">
+                    <div class="empty-state">Loading shop...</div>
+                </div>
+
+                <div class="section-card" style="margin-top:24px;">
+                    <h3>My Inventory</h3>
+                    <div class="shop-grid" id="inventory-grid">
+                        <p class="empty-hint">No items yet. Buy some from the shop!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Page -->
+            <div class="page" id="page-leaderboard" style="display:none;">
+                <div class="page-title">
+                    <h2>Leaderboard</h2>
+                </div>
+                <div class="tab-bar">
+                    <button class="tab active" data-tab="points" id="tab-points">⭐ Points</button>
+                    <button class="tab" data-tab="gems" id="tab-gems">💎 Gems</button>
+                </div>
+                <div class="leaderboard-list" id="leaderboard-list">
+                    <div class="empty-state">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page" id="page-profile" style="display:none;">
+                <div class="page-title">
+                    <h2>Profile</h2>
+                </div>
+                <div class="section-card">
+                    <div class="profile-header" id="profile-header">
+                        <div class="profile-avatar">👤</div>
+                        <div class="profile-info">
+                            <h3 id="profile-name">—</h3>
+                            <p id="profile-email" class="text-muted">—</p>
+                        </div>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="profile-stat-value" id="profile-points">0</span>
+                            <span class="profile-stat-label">Points</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-value" id="profile-gems">0</span>
+                            <span class="profile-stat-label">Gems</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3>Edit Profile</h3>
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label for="edit-display-name">Display Name</label>
+                            <input type="text" id="edit-display-name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    </form>
+                </div>
+
+                <button class="btn btn-ghost btn-full" id="logout-btn" style="margin-top:16px;">Log Out</button>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-tab active" data-page="dashboard">
+                <span class="nav-tab-icon">⭐</span>
+                <span class="nav-tab-label">Quests</span>
+            </a>
+            <a href="#" class="nav-tab" data-page="challenges">
+                <span class="nav-tab-icon">🔥</span>
+                <span class="nav-tab-label">Challenges</span>
+            </a>
+            <a href="#" class="nav-tab" data-page="friends">
+                <span class="nav-tab-icon">👥</span>
+                <span class="nav-tab-label">Friends</span>
+            </a>
+            <a href="#" class="nav-tab" data-page="shop">
+                <span class="nav-tab-icon">🛍️</span>
+                <span class="nav-tab-label">Shop</span>
+            </a>
+            <a href="#" class="nav-tab" data-page="leaderboard">
+                <span class="nav-tab-icon">🏆</span>
+                <span class="nav-tab-label">Ranks</span>
+            </a>
+            <a href="#" class="nav-tab" data-page="profile">
+                <span class="nav-tab-icon">👤</span>
+                <span class="nav-tab-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Proof Upload Modal -->
+    <div class="modal-overlay" id="proof-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="proof-modal-title">Submit Proof</h3>
+                <button class="modal-close" id="proof-modal-close">&times;</button>
+            </div>
+            <form id="proof-form" class="modal-body">
+                <input type="hidden" id="proof-target-id">
+                <input type="hidden" id="proof-target-type">
+                <div class="form-group">
+                    <label for="proof-file">Photo Proof</label>
+                    <input type="file" id="proof-file" accept="image/*" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" id="proof-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="proof-submit-btn">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Challenge Send Modal -->
+    <div class="modal-overlay" id="send-challenge-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Send Challenge to Friend</h3>
+                <button class="modal-close" id="send-challenge-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="send-challenge-quest-id">
+                <div class="form-group">
+                    <label>Choose a friend:</label>
+                    <div id="send-challenge-friends-list" class="friend-pick-list"></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-ghost" id="send-challenge-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
