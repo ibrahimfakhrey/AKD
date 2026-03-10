@@ -380,7 +380,7 @@ document.getElementById('friend-request-form').addEventListener('submit', async 
     e.preventDefault();
     const email = document.getElementById('friend-email').value;
     try {
-        await api('/friends/request', { method: 'POST', body: { email } });
+        await api('/friends/request', { method: 'POST', body: { friend_email: email } });
         toast('Friend request sent!');
         document.getElementById('friend-email').value = '';
     } catch (err) {
